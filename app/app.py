@@ -8,6 +8,11 @@ Tabs
 2. Evaluation    — performance table + PR curve + bar chart + statistical tests.
 3. RRF Explainer — rank breakdown table for the last Hybrid query.
 
+Theme support
+-------------
+- Dark / Light / System theme modes with segmented control switcher.
+- 100% SVG vector icons for crisp, professional appearance.
+
 Start with: streamlit run app/app.py
 """
 
@@ -146,6 +151,29 @@ def svg_icon(name: str, size: int = 16, color: str = "currentColor", extra_class
             f'<line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line>'
             f'<line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>'
         )
+    elif name == "sun":
+        return (
+            f'<svg class="{cls}" width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" '
+            f'stroke="{color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+            f'<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line>'
+            f'<line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>'
+            f'<line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line>'
+            f'<line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>'
+            f'<line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>'
+        )
+    elif name == "moon":
+        return (
+            f'<svg class="{cls}" width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" '
+            f'stroke="{color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+            f'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>'
+        )
+    elif name == "monitor":
+        return (
+            f'<svg class="{cls}" width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" '
+            f'stroke="{color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+            f'<rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>'
+            f'<line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>'
+        )
     elif name == "logo":
         return (
             f'<svg class="{cls}" width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" '
@@ -174,462 +202,627 @@ st.set_page_config(
 )
 
 # ══════════════════════════════════════════════════════════════════════════════
-# Global CSS  —  Sleek Dark Dashboard Aesthetic
+# Dynamic CSS Design System (Dark, Light, System themes)
 # ══════════════════════════════════════════════════════════════════════════════
-st.markdown("""
-<style>
-/* ── Google Fonts ─────────────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-/* ── Deep Dark Theme Surface ─────────────────────────────────────────── */
-html, body, [class*="css"], .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
-    background-color: #0e0e11 !important;
-    color: #f1f5f9 !important;
-}
+DARK_VARS = """
+    --bg-app: #0e0e11;
+    --bg-sidebar: #121216;
+    --bg-card: #121216;
+    --bg-card-subtle: #16161b;
+    --border-card: #1c1c24;
+    --border-hover: #2b4018;
+    --border-input: #22222a;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --accent: #c8f043;
+    --accent-bg: #1e2c12;
+    --accent-border: #283a18;
+    --gold-bg: #18140a;
+    --gold-border: #3b2c0d;
+    --gold-badge-bg: #2b1f09;
+    --gold-badge-border: #d97706;
+    --gold-badge-text: #fbd34d;
+    --score-bg: #17171d;
+    --score-border: #24242e;
+    --score-text: #94a3b8;
+    --rank-bg: #192710;
+    --rank-border: #2d4a1a;
+    --rank-text: #c8f043;
+    --input-bg: #141418;
+    --input-focus-border: #c8f043;
+    --tab-active: #c8f043;
+    --tab-inactive: #64748b;
+    --header-badge-bg: #172110;
+    --header-badge-border: #283a18;
+    --header-badge-text: #c8f043;
+    --query-pill-bg: #17240f;
+    --query-pill-border: #294218;
+    --query-pill-text: #c8f043;
+    --mc-green-bg: linear-gradient(135deg, #15250f 0%, #101c0a 100%);
+    --mc-green-border: #243d18;
+    --mc-green-label: #86efac;
+    --mc-blue-bg: linear-gradient(135deg, #0e1d35 0%, #091322 100%);
+    --mc-blue-border: #183158;
+    --mc-blue-label: #93c5fd;
+    --mc-purple-bg: linear-gradient(135deg, #1b102b 0%, #12091d 100%);
+    --mc-purple-border: #331d54;
+    --mc-purple-label: #c4b5fd;
+    --mc-teal-bg: linear-gradient(135deg, #092123 0%, #051416 100%);
+    --mc-teal-border: #123336;
+    --mc-teal-label: #5eead4;
+    --info-bg: #0f1c30;
+    --info-border: #1b3356;
+    --info-text: #93c5fd;
+    --warning-bg: #231908;
+    --warning-border: #4a3410;
+    --warning-text: #fcd34d;
+    --code-bg: #111115;
+    --mark-bg: rgba(200, 240, 67, 0.18);
+    --mark-color: #c8f043;
+    --col-header-bg: #15151a;
+    --col-header-border: #22222a;
+    --rrf-formula-bg: #15151a;
+    --rrf-formula-border: #22222a;
+"""
 
-#MainMenu, footer, header { visibility: hidden; }
-.block-container { padding: 1.8rem 2.4rem 2rem !important; max-width: 100% !important; }
+LIGHT_VARS = """
+    --bg-app: #f8fafc;
+    --bg-sidebar: #f1f5f9;
+    --bg-card: #ffffff;
+    --bg-card-subtle: #f8fafc;
+    --border-card: #e2e8f0;
+    --border-hover: #84cc16;
+    --border-input: #cbd5e1;
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+    --accent: #4d7c0f;
+    --accent-bg: #f7fee7;
+    --accent-border: #bef264;
+    --gold-bg: #fffbeb;
+    --gold-border: #fde68a;
+    --gold-badge-bg: #fef3c7;
+    --gold-badge-border: #f59e0b;
+    --gold-badge-text: #92400e;
+    --score-bg: #f1f5f9;
+    --score-border: #e2e8f0;
+    --score-text: #475569;
+    --rank-bg: #f0fdf4;
+    --rank-border: #bbf7d0;
+    --rank-text: #166534;
+    --input-bg: #ffffff;
+    --input-focus-border: #65a30d;
+    --tab-active: #3f6212;
+    --tab-inactive: #64748b;
+    --header-badge-bg: #f0fdf4;
+    --header-badge-border: #bbf7d0;
+    --header-badge-text: #166534;
+    --query-pill-bg: #f0fdf4;
+    --query-pill-border: #bbf7d0;
+    --query-pill-text: #166534;
+    --mc-green-bg: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    --mc-green-border: #86efac;
+    --mc-green-label: #166534;
+    --mc-blue-bg: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    --mc-blue-border: #93c5fd;
+    --mc-blue-label: #1e40af;
+    --mc-purple-bg: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    --mc-purple-border: #d8b4fe;
+    --mc-purple-label: #6b21a8;
+    --mc-teal-bg: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
+    --mc-teal-border: #5eead4;
+    --mc-teal-label: #115e59;
+    --info-bg: #eff6ff;
+    --info-border: #bfdbfe;
+    --info-text: #1d4ed8;
+    --warning-bg: #fffbeb;
+    --warning-border: #fde68a;
+    --warning-text: #92400e;
+    --code-bg: #f8fafc;
+    --mark-bg: rgba(132, 204, 22, 0.22);
+    --mark-color: #365314;
+    --col-header-bg: #ffffff;
+    --col-header-border: #e2e8f0;
+    --rrf-formula-bg: #ffffff;
+    --rrf-formula-border: #e2e8f0;
+"""
 
-/* ── Inline SVG styling ──────────────────────────────────────────────── */
-.svg-ic {
-    display: inline-block;
-    vertical-align: -0.18em;
-    flex-shrink: 0;
-}
+def inject_theme_css(theme_mode: str = "Dark"):
+    """Inject CSS tokens based on selected theme mode (Dark, Light, or System)."""
+    if theme_mode == "Dark":
+        css_vars = f":root {{\n{DARK_VARS}\n}}"
+    elif theme_mode == "Light":
+        css_vars = f":root {{\n{LIGHT_VARS}\n}}"
+    else:  # System
+        css_vars = f":root {{\n{LIGHT_VARS}\n}}\n@media (prefers-color-scheme: dark) {{\n:root {{\n{DARK_VARS}\n}}\n}}"
 
-/* ── Sidebar ──────────────────────────────────────────────────────────── */
-[data-testid="stSidebar"] {
-    background-color: #121216 !important;
-    border-right: 1px solid #1c1c22 !important;
-}
-[data-testid="stSidebar"] .block-container { padding: 1.6rem 1.1rem !important; }
+    st.markdown(f"""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-.sidebar-logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 0 0 1.3rem 0;
-    border-bottom: 1px solid #1e1e26;
-    margin-bottom: 1.4rem;
-}
-.sidebar-logo .icon-box {
-    width: 38px; height: 38px;
-    background: linear-gradient(135deg, #c8f043 0%, #9ae62e 100%);
-    border-radius: 11px;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 12px rgba(200, 240, 67, 0.25);
-}
-.sidebar-logo .name { font-size: 0.96rem; font-weight: 700; color: #f8fafc; line-height: 1.2; letter-spacing: -0.01em; }
-.sidebar-logo .sub  { font-size: 0.72rem; color: #64748b; font-weight: 400; }
+    {css_vars}
 
-.nav-label {
-    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em;
-    color: #475569; text-transform: uppercase; margin: 1.2rem 0 0.5rem;
-}
+    /* ── Base App Container ────────────────────────────────────────────── */
+    html, body, [class*="css"], .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {{
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        background-color: var(--bg-app) !important;
+        color: var(--text-primary) !important;
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }}
 
-.sidebar-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    background: #16161b;
-    border: 1px solid #202028;
-    border-radius: 12px;
-    padding: 0.85rem 1rem;
-    font-size: 0.78rem;
-    color: #94a3b8;
-}
-.sidebar-meta-item {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-}
+    #MainMenu, footer, header {{ visibility: hidden; }}
+    .block-container {{ padding: 1.8rem 2.4rem 2rem !important; max-width: 100% !important; }}
 
-/* ── Streamlit Radio Buttons ─────────────────────────────────────────── */
-[data-testid="stRadio"] > label { display: none !important; }
-[data-testid="stRadio"] div[role="radiogroup"] {
-    gap: 6px !important;
-    flex-direction: column !important;
-}
-[data-testid="stRadio"] label {
-    background: #17171c !important;
-    border: 1px solid #22222a !important;
-    border-radius: 10px !important;
-    padding: 0.6rem 0.95rem !important;
-    font-size: 0.86rem !important;
-    font-weight: 500 !important;
-    color: #94a3b8 !important;
-    cursor: pointer !important;
-    transition: all 0.16s ease-in-out !important;
-}
-[data-testid="stRadio"] label:hover {
-    border-color: #2e3a1f !important;
-    color: #f1f5f9 !important;
-}
-[data-testid="stRadio"] input[type="radio"]:checked + div {
-    background: #1e2c12 !important;
-    border-color: #c8f043 !important;
-    color: #c8f043 !important;
-    font-weight: 600 !important;
-}
+    .svg-ic {{
+        display: inline-block;
+        vertical-align: -0.18em;
+        flex-shrink: 0;
+    }}
 
-/* ── Streamlit Slider ────────────────────────────────────────────────── */
-[data-testid="stSlider"] [data-baseweb="slider"] div[role="slider"] {
-    background: #c8f043 !important;
-    box-shadow: 0 0 0 4px rgba(200, 240, 67, 0.22) !important;
-}
-[data-testid="stSlider"] [data-baseweb="track-foreground"] {
-    background: #c8f043 !important;
-}
+    /* ── Sidebar ──────────────────────────────────────────────────────── */
+    [data-testid="stSidebar"] {{
+        background-color: var(--bg-sidebar) !important;
+        border-right: 1px solid var(--border-card) !important;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+    }}
+    [data-testid="stSidebar"] .block-container {{ padding: 1.6rem 1.1rem !important; }}
 
-/* ── Tabs Bar ────────────────────────────────────────────────────────── */
-[data-testid="stTabs"] [data-baseweb="tab-list"] {
-    background: transparent !important;
-    border-bottom: 1px solid #1c1c24 !important;
-    gap: 8px !important;
-}
-[data-testid="stTabs"] [data-baseweb="tab"] {
-    background: transparent !important;
-    border: none !important;
-    color: #64748b !important;
-    font-size: 0.88rem !important;
-    font-weight: 600 !important;
-    padding: 0.7rem 1.3rem !important;
-    border-bottom: 2px solid transparent !important;
-    transition: all 0.18s ease-in-out !important;
-}
-[data-testid="stTabs"] [data-baseweb="tab"]:hover { color: #e2e8f0 !important; }
-[data-testid="stTabs"] [aria-selected="true"] {
-    color: #c8f043 !important;
-    border-bottom-color: #c8f043 !important;
-}
-[data-testid="stTabs"] [data-baseweb="tab-border"] { display: none !important; }
+    .sidebar-logo {{
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0 0 1.2rem 0;
+        border-bottom: 1px solid var(--border-card);
+        margin-bottom: 1.2rem;
+    }}
+    .sidebar-logo .icon-box {{
+        width: 38px; height: 38px;
+        background: linear-gradient(135deg, #c8f043 0%, #9ae62e 100%);
+        border-radius: 11px;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 4px 12px rgba(200, 240, 67, 0.25);
+    }}
+    .sidebar-logo .name {{ font-size: 0.96rem; font-weight: 700; color: var(--text-primary); line-height: 1.2; letter-spacing: -0.01em; }}
+    .sidebar-logo .sub  {{ font-size: 0.72rem; color: var(--text-muted); font-weight: 400; }}
 
-/* ── Form Inputs ─────────────────────────────────────────────────────── */
-[data-testid="stTextInput"] input {
-    background: #141418 !important;
-    border: 1px solid #22222a !important;
-    border-radius: 12px !important;
-    color: #f1f5f9 !important;
-    padding: 0.75rem 1.1rem !important;
-    font-size: 0.92rem !important;
-}
-[data-testid="stTextInput"] input:focus {
-    border-color: #c8f043 !important;
-    box-shadow: 0 0 0 3px rgba(200, 240, 67, 0.15) !important;
-}
+    .nav-label {{
+        font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em;
+        color: var(--text-muted); text-transform: uppercase; margin: 1.1rem 0 0.5rem;
+    }}
 
-[data-testid="stSelectbox"] > div > div {
-    background: #141418 !important;
-    border: 1px solid #22222a !important;
-    border-radius: 12px !important;
-    color: #f1f5f9 !important;
-}
+    .sidebar-meta {{
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        background: var(--bg-card-subtle);
+        border: 1px solid var(--border-card);
+        border-radius: 12px;
+        padding: 0.85rem 1rem;
+        font-size: 0.78rem;
+        color: var(--text-secondary);
+    }}
+    .sidebar-meta-item {{
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }}
 
-/* ── Page Header ─────────────────────────────────────────────────────── */
-.page-header { margin-bottom: 1.6rem; }
-.header-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #172110;
-    border: 1px solid #283a18;
-    color: #c8f043;
-    border-radius: 999px;
-    padding: 3px 10px;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-}
-.page-header h1 {
-    font-size: 1.65rem; font-weight: 800;
-    color: #f8fafc; margin: 0 0 0.25rem;
-    letter-spacing: -0.03em;
-}
-.page-header p { font-size: 0.86rem; color: #64748b; margin: 0; }
+    /* ── Segmented Control (Theme Switcher) ───────────────────────────── */
+    [data-testid="stSegmentedControl"] {{
+        width: 100% !important;
+        margin-bottom: 0.5rem !important;
+    }}
+    [data-testid="stSegmentedControl"] div[data-baseweb="button-group"],
+    [data-testid="stSegmentedControl"] div[role="radiogroup"] {{
+        display: flex !important;
+        width: 100% !important;
+        gap: 0 !important;
+    }}
+    [data-testid="stSegmentedControl"] button {{
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+        background: var(--bg-card) !important;
+        border: 1px solid var(--border-card) !important;
+        color: var(--text-secondary) !important;
+        font-size: 0.8rem !important;
+        font-weight: 600 !important;
+        padding: 0.4rem 0.2rem !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+        transition: all 0.16s ease !important;
+    }}
+    [data-testid="stSegmentedControl"] button[aria-checked="true"] {{
+        background: var(--accent-bg) !important;
+        border-color: var(--accent) !important;
+        color: var(--accent) !important;
+        font-weight: 700 !important;
+    }}
 
-/* ── Metric Card Grid ────────────────────────────────────────────────── */
-.metric-card {
-    border-radius: 16px;
-    padding: 1.1rem 1.3rem;
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 1rem;
-}
-.metric-card.green  { background: linear-gradient(135deg, #15250f 0%, #101c0a 100%); border: 1px solid #243d18; }
-.metric-card.blue   { background: linear-gradient(135deg, #0e1d35 0%, #091322 100%); border: 1px solid #183158; }
-.metric-card.purple { background: linear-gradient(135deg, #1b102b 0%, #12091d 100%); border: 1px solid #331d54; }
-.metric-card.teal   { background: linear-gradient(135deg, #092123 0%, #051416 100%); border: 1px solid #123336; }
+    /* ── Radio Buttons ────────────────────────────────────────────────── */
+    [data-testid="stRadio"] > label {{ display: none !important; }}
+    [data-testid="stRadio"] div[role="radiogroup"] {{
+        gap: 6px !important;
+        flex-direction: column !important;
+    }}
+    [data-testid="stRadio"] label {{
+        background: var(--bg-card) !important;
+        border: 1px solid var(--border-card) !important;
+        border-radius: 10px !important;
+        padding: 0.6rem 0.95rem !important;
+        font-size: 0.86rem !important;
+        font-weight: 500 !important;
+        color: var(--text-secondary) !important;
+        cursor: pointer !important;
+        transition: all 0.16s ease-in-out !important;
+    }}
+    [data-testid="stRadio"] label:hover {{
+        border-color: var(--border-hover) !important;
+        color: var(--text-primary) !important;
+    }}
+    [data-testid="stRadio"] input[type="radio"]:checked + div {{
+        background: var(--accent-bg) !important;
+        border-color: var(--accent) !important;
+        color: var(--accent) !important;
+        font-weight: 600 !important;
+    }}
 
-.mc-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.45rem;
-}
-.mc-label {
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-}
-.metric-card.green  .mc-label { color: #86efac; }
-.metric-card.blue   .mc-label { color: #93c5fd; }
-.metric-card.purple .mc-label { color: #c4b5fd; }
-.metric-card.teal   .mc-label { color: #5eead4; }
+    /* ── Slider ───────────────────────────────────────────────────────── */
+    [data-testid="stSlider"] [data-baseweb="slider"] div[role="slider"] {{
+        background: var(--accent) !important;
+        box-shadow: 0 0 0 4px rgba(200, 240, 67, 0.22) !important;
+    }}
+    [data-testid="stSlider"] [data-baseweb="track-foreground"] {{
+        background: var(--accent) !important;
+    }}
 
-.mc-value {
-    font-size: 1.85rem;
-    font-weight: 800;
-    color: #f8fafc;
-    letter-spacing: -0.04em;
-    line-height: 1.1;
-}
-.mc-sub { font-size: 0.72rem; color: #64748b; margin-top: 0.35rem; }
+    /* ── Tabs ─────────────────────────────────────────────────────────── */
+    [data-testid="stTabs"] [data-baseweb="tab-list"] {{
+        background: transparent !important;
+        border-bottom: 1px solid var(--border-card) !important;
+        gap: 8px !important;
+    }}
+    [data-testid="stTabs"] [data-baseweb="tab"] {{
+        background: transparent !important;
+        border: none !important;
+        color: var(--tab-inactive) !important;
+        font-size: 0.88rem !important;
+        font-weight: 600 !important;
+        padding: 0.7rem 1.3rem !important;
+        border-bottom: 2px solid transparent !important;
+        transition: all 0.18s ease-in-out !important;
+    }}
+    [data-testid="stTabs"] [data-baseweb="tab"]:hover {{ color: var(--text-primary) !important; }}
+    [data-testid="stTabs"] [aria-selected="true"] {{
+        color: var(--tab-active) !important;
+        border-bottom-color: var(--tab-active) !important;
+    }}
+    [data-testid="stTabs"] [data-baseweb="tab-border"] {{ display: none !important; }}
 
-/* ── Query Pill ──────────────────────────────────────────────────────── */
-.query-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: #17240f;
-    border: 1px solid #294218;
-    border-radius: 999px;
-    padding: 0.35rem 0.95rem;
-    font-size: 0.82rem;
-    color: #c8f043;
-    font-weight: 500;
-    margin-bottom: 1.1rem;
-}
+    /* ── Form Inputs ──────────────────────────────────────────────────── */
+    [data-testid="stTextInput"] input {{
+        background: var(--input-bg) !important;
+        border: 1px solid var(--border-input) !important;
+        border-radius: 12px !important;
+        color: var(--text-primary) !important;
+        padding: 0.75rem 1.1rem !important;
+        font-size: 0.92rem !important;
+    }}
+    [data-testid="stTextInput"] input:focus {{
+        border-color: var(--input-focus-border) !important;
+        box-shadow: 0 0 0 3px rgba(200, 240, 67, 0.15) !important;
+    }}
+    [data-testid="stSelectbox"] > div > div {{
+        background: var(--input-bg) !important;
+        border: 1px solid var(--border-input) !important;
+        border-radius: 12px !important;
+        color: var(--text-primary) !important;
+    }}
 
-/* ── Result Card ─────────────────────────────────────────────────────── */
-.result-card {
-    background: #121216;
-    border: 1px solid #1c1c24;
-    border-radius: 14px;
-    padding: 1.05rem 1.25rem;
-    margin-bottom: 0.75rem;
-    transition: transform 0.16s ease, border-color 0.16s ease;
-}
-.result-card:hover {
-    border-color: #2b4018;
-    transform: translateY(-1px);
-}
-.result-card.gold {
-    border-color: #3b2c0d;
-    background: #18140a;
-}
-.result-card.gold:hover {
-    border-color: #f59e0b;
-}
+    /* ── Page Header ──────────────────────────────────────────────────── */
+    .page-header {{ margin-bottom: 1.6rem; }}
+    .header-badge {{
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--header-badge-bg);
+        border: 1px solid var(--header-badge-border);
+        color: var(--header-badge-text);
+        border-radius: 999px;
+        padding: 3px 10px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+    }}
+    .page-header h1 {{
+        font-size: 1.65rem; font-weight: 800;
+        color: var(--text-primary); margin: 0 0 0.25rem;
+        letter-spacing: -0.03em;
+    }}
+    .page-header p {{ font-size: 0.86rem; color: var(--text-muted); margin: 0; }}
 
-.rc-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 0.65rem;
-    flex-wrap: wrap;
-}
-.rank-badge {
-    width: 26px; height: 26px;
-    background: #192710;
-    border: 1px solid #2d4a1a;
-    border-radius: 8px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.76rem;
-    font-weight: 700;
-    color: #c8f043;
-    flex-shrink: 0;
-}
-.rank-badge.gold-rank {
-    background: #2b1f09;
-    border-color: #f59e0b;
-    color: #fbd34d;
-}
-.doc-title {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #f1f5f9;
-    flex: 1; min-width: 0;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.gold-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: #2b1f09;
-    border: 1px solid #d97706;
-    color: #fbd34d;
-    border-radius: 6px;
-    padding: 2px 8px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-}
-.score-badge {
-    background: #17171d;
-    border: 1px solid #24242e;
-    color: #94a3b8;
-    border-radius: 6px;
-    padding: 2px 8px;
-    font-size: 0.74rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 600;
-    margin-left: auto;
-}
-.passage-text {
-    font-size: 0.84rem;
-    color: #94a3b8;
-    line-height: 1.65;
-}
-mark {
-    background: rgba(200, 240, 67, 0.18);
-    color: #c8f043;
-    padding: 1px 4px;
-    border-radius: 4px;
-    font-weight: 600;
-}
+    /* ── Metric Card Grid ─────────────────────────────────────────────── */
+    .metric-card {{
+        border-radius: 16px;
+        padding: 1.1rem 1.3rem;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }}
+    .metric-card.green  {{ background: var(--mc-green-bg); border: 1px solid var(--mc-green-border); }}
+    .metric-card.blue   {{ background: var(--mc-blue-bg); border: 1px solid var(--mc-blue-border); }}
+    .metric-card.purple {{ background: var(--mc-purple-bg); border: 1px solid var(--mc-purple-border); }}
+    .metric-card.teal   {{ background: var(--mc-teal-bg); border: 1px solid var(--mc-teal-border); }}
 
-/* ── Compare Headers ─────────────────────────────────────────────────── */
-.col-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    background: #15151a;
-    border: 1px solid #22222a;
-    border-radius: 11px;
-    padding: 0.55rem 0.8rem;
-    margin-bottom: 0.85rem;
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: #f1f5f9;
-}
-.col-header .ms { color: #64748b; font-weight: 400; font-size: 0.74rem; }
+    .mc-top {{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.45rem;
+    }}
+    .mc-label {{
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }}
+    .metric-card.green  .mc-label {{ color: var(--mc-green-label); }}
+    .metric-card.blue   .mc-label {{ color: var(--mc-blue-label); }}
+    .metric-card.purple .mc-label {{ color: var(--mc-purple-label); }}
+    .metric-card.teal   .mc-label {{ color: var(--mc-teal-label); }}
 
-/* ── Section Cards ───────────────────────────────────────────────────── */
-.section-card {
-    background: #121216;
-    border: 1px solid #1c1c24;
-    border-radius: 16px;
-    padding: 1.3rem 1.6rem;
-    margin-bottom: 1.3rem;
-}
-.section-card h3 {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.94rem;
-    font-weight: 700;
-    color: #f1f5f9;
-    margin: 0 0 1rem;
-}
+    .mc-value {{
+        font-size: 1.85rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        letter-spacing: -0.04em;
+        line-height: 1.1;
+    }}
+    .mc-sub {{ font-size: 0.72rem; color: var(--text-muted); margin-top: 0.35rem; }}
 
-/* ── Info & Warning Cards ────────────────────────────────────────────── */
-.info-card {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    background: #0f1c30;
-    border: 1px solid #1b3356;
-    border-radius: 13px;
-    padding: 1rem 1.25rem;
-    font-size: 0.85rem;
-    color: #93c5fd;
-    line-height: 1.55;
-    margin-bottom: 1.1rem;
-}
-.info-card.warning {
-    background: #231908;
-    border-color: #4a3410;
-    color: #fcd34d;
-}
-.info-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-top: 2px;
-}
+    /* ── Query Pill ───────────────────────────────────────────────────── */
+    .query-pill {{
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--query-pill-bg);
+        border: 1px solid var(--query-pill-border);
+        border-radius: 999px;
+        padding: 0.35rem 0.95rem;
+        font-size: 0.82rem;
+        color: var(--query-pill-text);
+        font-weight: 500;
+        margin-bottom: 1.1rem;
+    }}
 
-/* ── Eval Image Wrapper ──────────────────────────────────────────────── */
-.eval-img-wrap {
-    background: #121216;
-    border: 1px solid #1c1c24;
-    border-radius: 15px;
-    padding: 1.2rem;
-    margin-bottom: 1.1rem;
-}
-.eval-img-wrap h4 {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: #94a3b8;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin: 0 0 0.85rem;
-}
+    /* ── Result Card ──────────────────────────────────────────────────── */
+    .result-card {{
+        background: var(--bg-card);
+        border: 1px solid var(--border-card);
+        border-radius: 14px;
+        padding: 1.05rem 1.25rem;
+        margin-bottom: 0.75rem;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        transition: transform 0.16s ease, border-color 0.16s ease;
+    }}
+    .result-card:hover {{
+        border-color: var(--border-hover);
+        transform: translateY(-1px);
+    }}
+    .result-card.gold {{
+        border-color: var(--gold-border);
+        background: var(--gold-bg);
+    }}
 
-/* ── RRF Formula ─────────────────────────────────────────────────────── */
-.rrf-formula {
-    background: #15151a;
-    border: 1px solid #22222a;
-    border-left: 3px solid #c8f043;
-    border-radius: 0 12px 12px 0;
-    padding: 0.85rem 1.15rem;
-    margin: 1.1rem 0;
-}
-.formula-title {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.74rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #c8f043;
-    margin-bottom: 0.35rem;
-}
-.rrf-formula code {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.88rem;
-    color: #e2e8f0;
-}
+    .rc-header {{
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 0.65rem;
+        flex-wrap: wrap;
+    }}
+    .rank-badge {{
+        width: 26px; height: 26px;
+        background: var(--rank-bg);
+        border: 1px solid var(--rank-border);
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.76rem;
+        font-weight: 700;
+        color: var(--rank-text);
+        flex-shrink: 0;
+    }}
+    .rank-badge.gold-rank {{
+        background: var(--gold-badge-bg);
+        border-color: var(--gold-badge-border);
+        color: var(--gold-badge-text);
+    }}
+    .doc-title {{
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        flex: 1; min-width: 0;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }}
+    .gold-badge {{
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: var(--gold-badge-bg);
+        border: 1px solid var(--gold-badge-border);
+        color: var(--gold-badge-text);
+        border-radius: 6px;
+        padding: 2px 8px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+    }}
+    .score-badge {{
+        background: var(--score-bg);
+        border: 1px solid var(--score-border);
+        color: var(--score-text);
+        border-radius: 6px;
+        padding: 2px 8px;
+        font-size: 0.74rem;
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 600;
+        margin-left: auto;
+    }}
+    .passage-text {{
+        font-size: 0.84rem;
+        color: var(--text-secondary);
+        line-height: 1.65;
+    }}
+    mark {{
+        background: var(--mark-bg);
+        color: var(--mark-color);
+        padding: 1px 4px;
+        border-radius: 4px;
+        font-weight: 600;
+    }}
 
-.divider-label {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 1.4rem 0 1rem;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #475569;
-}
-.divider-label::before, .divider-label::after {
-    content: ''; flex: 1; height: 1px; background: #1c1c24;
-}
+    /* ── Compare Headers ──────────────────────────────────────────────── */
+    .col-header {{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: var(--col-header-bg);
+        border: 1px solid var(--col-header-border);
+        border-radius: 11px;
+        padding: 0.55rem 0.8rem;
+        margin-bottom: 0.85rem;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--text-primary);
+    }}
+    .col-header .ms {{ color: var(--text-muted); font-weight: 400; font-size: 0.74rem; }}
 
-/* ── Dataframes ──────────────────────────────────────────────────────── */
-[data-testid="stDataFrame"] {
-    border-radius: 12px !important;
-    overflow: hidden !important;
-    border: 1px solid #1c1c24 !important;
-}
-[data-testid="stCode"] {
-    background: #111115 !important;
-    border: 1px solid #1c1c24 !important;
-    border-radius: 12px !important;
-}
-</style>
-""", unsafe_allow_html=True)
+    /* ── Section Cards ────────────────────────────────────────────────── */
+    .section-card {{
+        background: var(--bg-card);
+        border: 1px solid var(--border-card);
+        border-radius: 16px;
+        padding: 1.3rem 1.6rem;
+        margin-bottom: 1.3rem;
+    }}
+    .section-card h3 {{
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.94rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0 0 1rem;
+    }}
+
+    /* ── Info & Warning Cards ─────────────────────────────────────────── */
+    .info-card {{
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        background: var(--info-bg);
+        border: 1px solid var(--info-border);
+        border-radius: 13px;
+        padding: 1rem 1.25rem;
+        font-size: 0.85rem;
+        color: var(--info-text);
+        line-height: 1.55;
+        margin-bottom: 1.1rem;
+    }}
+    .info-card.warning {{
+        background: var(--warning-bg);
+        border-color: var(--warning-border);
+        color: var(--warning-text);
+    }}
+    .info-icon {{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }}
+
+    /* ── Eval Image Wrapper ───────────────────────────────────────────── */
+    .eval-img-wrap {{
+        background: var(--bg-card);
+        border: 1px solid var(--border-card);
+        border-radius: 15px;
+        padding: 1.2rem;
+        margin-bottom: 1.1rem;
+    }}
+    .eval-img-wrap h4 {{
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin: 0 0 0.85rem;
+    }}
+
+    /* ── RRF Formula ──────────────────────────────────────────────────── */
+    .rrf-formula {{
+        background: var(--rrf-formula-bg);
+        border: 1px solid var(--rrf-formula-border);
+        border-left: 3px solid var(--accent);
+        border-radius: 0 12px 12px 0;
+        padding: 0.85rem 1.15rem;
+        margin: 1.1rem 0;
+    }}
+    .formula-title {{
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.74rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--accent);
+        margin-bottom: 0.35rem;
+    }}
+    .rrf-formula code {{
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.88rem;
+        color: var(--text-primary);
+    }}
+
+    .divider-label {{
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 1.4rem 0 1rem;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+    }}
+    .divider-label::before, .divider-label::after {{
+        content: ''; flex: 1; height: 1px; background: var(--border-card);
+    }}
+
+    /* ── Dataframe & Code ─────────────────────────────────────────────── */
+    [data-testid="stDataFrame"] {{
+        border-radius: 12px !important;
+        overflow: hidden !important;
+        border: 1px solid var(--border-card) !important;
+    }}
+    [data-testid="stCode"] {{
+        background: var(--code-bg) !important;
+        border: 1px solid var(--border-card) !important;
+        border-radius: 12px !important;
+    }}
+    </style>
+    """, unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -718,7 +911,6 @@ def render_result_card(rank: int, doc_id: str, score: float,
     card_cls = "gold"      if is_gold else ""
     gold_html = f'<span class="gold-badge">{svg_icon("star", 11, "#f59e0b")} Relevant</span>' if is_gold else ""
 
-    # Constructed without multiline leading 4-space markdown indentations
     card_html = (
         f'<div class="result-card {card_cls}">'
         f'<div class="rc-header">'
@@ -763,6 +955,18 @@ def render_sidebar(cfg):
             unsafe_allow_html=True,
         )
 
+        st.markdown('<div class="nav-label">Theme Mode</div>', unsafe_allow_html=True)
+        theme_options = ["Dark", "Light", "System"]
+        selected_theme = st.segmented_control(
+            "Theme Mode",
+            options=theme_options,
+            selection_mode="single",
+            required=True,
+            width="stretch",
+            key="theme_mode",
+            label_visibility="collapsed",
+        ) or st.session_state.get("theme_mode", "Dark")
+
         st.markdown('<div class="nav-label">Retrieval Paradigm</div>', unsafe_allow_html=True)
         model_choice = st.radio(
             "model",
@@ -790,7 +994,7 @@ def render_sidebar(cfg):
             unsafe_allow_html=True,
         )
 
-    return model_choice, k
+    return model_choice, k, selected_theme
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -884,7 +1088,7 @@ def tab_search(cfg, rankers, corpus_dict, qrels_dict, sample_queries, model_choi
         m3.markdown(
             f'<div class="metric-card purple">'
             f'<div class="mc-top"><span class="mc-label">Latency</span>{svg_icon("clock", 16, "#c4b5fd")}</div>'
-            f'<div class="mc-value">{ms:.0f}<span style="font-size:1.1rem;font-weight:400;color:#94a3b8"> ms</span></div>'
+            f'<div class="mc-value">{ms:.0f}<span style="font-size:1.1rem;font-weight:400;color:var(--text-muted)"> ms</span></div>'
             f'<div class="mc-sub">query execution time</div>'
             f'</div>',
             unsafe_allow_html=True,
@@ -911,7 +1115,7 @@ def tab_search(cfg, rankers, corpus_dict, qrels_dict, sample_queries, model_choi
 # Tab 2 — Evaluation
 # ══════════════════════════════════════════════════════════════════════════════
 
-def tab_evaluation():
+def tab_evaluation(theme_mode: str = "Dark"):
     st.markdown(
         f'<div class="page-header">'
         f'<div class="header-badge">{svg_icon("chart", 11, "#60a5fa")} Benchmark Analysis</div>'
@@ -926,8 +1130,10 @@ def tab_evaluation():
     table_path = results_dir / "performance_table.csv"
     if table_path.exists():
         df = pd.read_csv(table_path, index_col=0)
+        highlight_color = "#dcfce7" if theme_mode == "Light" else "#1e3a18"
+        highlight_text  = "color:#166534;font-weight:700" if theme_mode == "Light" else "color:#c8f043;font-weight:700"
         styled = df.style.format("{:.4f}").highlight_max(
-            axis=0, color="#1e3a18", props="color:#c8f043;font-weight:700"
+            axis=0, color=highlight_color, props=highlight_text
         )
         st.markdown(
             f'<div class="section-card"><h3>{svg_icon("chart", 16, "#c8f043")} Performance Benchmark Table</h3>',
@@ -978,7 +1184,7 @@ def tab_evaluation():
 # Tab 3 — RRF Explainer
 # ══════════════════════════════════════════════════════════════════════════════
 
-def tab_rrf_explainer():
+def tab_rrf_explainer(theme_mode: str = "Dark"):
     st.markdown(
         f'<div class="page-header">'
         f'<div class="header-badge">{svg_icon("lightning", 11, "#c8f043")} Fusion Math</div>'
@@ -1031,10 +1237,14 @@ def tab_rrf_explainer():
     df = pd.DataFrame(rows)
     rrf_cols   = [c for c in df.columns if "1/(k+r)" in c]
     fmt_dict   = {"RRF Score": "{:.5f}", **{c: "{:.5f}" for c in rrf_cols}}
+
+    highlight_color = "#dcfce7" if theme_mode == "Light" else "#1e3a18"
+    highlight_text  = "color:#166534;font-weight:700" if theme_mode == "Light" else "color:#c8f043;font-weight:700"
+
     st.dataframe(
         df.style.format(fmt_dict).highlight_max(
-            subset=["RRF Score"], color="#1e3a18",
-            props="color:#c8f043;font-weight:700"
+            subset=["RRF Score"], color=highlight_color,
+            props=highlight_text
         ),
         use_container_width=True,
     )
@@ -1060,31 +1270,34 @@ def tab_rrf_explainer():
 # ══════════════════════════════════════════════════════════════════════════════
 
 def main():
+    current_theme = st.session_state.get("theme_mode", "Dark")
+    inject_theme_css(current_theme)
+
     try:
         cfg, rankers, corpus_dict, qrels_dict, sample_queries = load_all()
     except FileNotFoundError as e:
         st.markdown(
             f'<div style="max-width:600px;margin:4rem auto;text-align:center">'
             f'<div style="margin-bottom:1rem">{svg_icon("alert", 48, "#fbbf24")}</div>'
-            f'<h2 style="color:#f1f5f9;margin:0 0 0.5rem">Setup Incomplete</h2>'
-            f'<p style="color:#64748b;margin-bottom:1.5rem">{e}</p>'
-            f'<div style="background:#15151a;border:1px solid #22222a;border-radius:12px;padding:1rem;text-align:left">'
-            f'<code style="color:#c8f043">python run_all.py</code>'
+            f'<h2 style="color:var(--text-primary);margin:0 0 0.5rem">Setup Incomplete</h2>'
+            f'<p style="color:var(--text-muted);margin-bottom:1.5rem">{e}</p>'
+            f'<div style="background:var(--bg-card);border:1px solid var(--border-card);border-radius:12px;padding:1rem;text-align:left">'
+            f'<code style="color:var(--accent)">python run_all.py</code>'
             f'</div>'
             f'</div>',
             unsafe_allow_html=True,
         )
         return
 
-    model_choice, k = render_sidebar(cfg)
+    model_choice, k, active_theme = render_sidebar(cfg)
 
     tab1, tab2, tab3 = st.tabs(["Search", "Evaluation", "RRF Explainer"])
     with tab1:
         tab_search(cfg, rankers, corpus_dict, qrels_dict, sample_queries, model_choice, k)
     with tab2:
-        tab_evaluation()
+        tab_evaluation(active_theme)
     with tab3:
-        tab_rrf_explainer()
+        tab_rrf_explainer(active_theme)
 
 
 if __name__ == "__main__":
