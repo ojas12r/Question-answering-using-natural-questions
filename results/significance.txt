@@ -1,0 +1,14 @@
+=======================================================
+  STATISTICAL SIGNIFICANCE TEST
+=======================================================
+  Model A: Hybrid-RRF
+  Model B: Dense
+  Metric : nDCG@10
+  Queries: 800
+  Mean A : 0.7488
+  Mean B : 0.8249
+  Delta  : -0.0760
+  t-stat : -7.3584
+  p-value: 0.000000
+  Result : SIGNIFICANT at alpha=0.05
+=======================================================

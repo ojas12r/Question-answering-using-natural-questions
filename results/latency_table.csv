@@ -1,0 +1,5 @@
+Model,Avg Latency (ms),Index Size (MB)
+TF-IDF,24.82,17.2
+BM25,20.48,17.2
+Dense,21.27,146.5
+Hybrid-RRF,69.64,163.7

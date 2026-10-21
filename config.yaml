@@ -1,0 +1,87 @@
+# =============================================================================
+# config.yaml — Master configuration for NQ Evidence Retrieval project
+# All tuneable parameters live here; code reads this at runtime.
+# =============================================================================
+
+# --------------- Reproducibility -------------------------------------------
+seed: 42
+
+# --------------- Dataset ----------------------------------------------------
+dataset:
+  name: "beir/nq"                 # ir_datasets dataset id
+  hf_corpus: "BeIR/nq"           # HuggingFace fallback (corpus split)
+  hf_queries: "BeIR/nq"          # HuggingFace fallback (queries split)
+  hf_qrels: "BeIR/nq-qrels"      # HuggingFace fallback (qrels)
+  target_corpus_size: 100000     # approx total passages in subset (~100k)
+  max_queries: 1000              # max test queries to evaluate (set null for all)
+  dev_queries: 200               # held-out queries for BM25 hyperparameter tuning
+  data_dir: "data/processed"
+
+# --------------- Preprocessing ----------------------------------------------
+preprocessing:
+  tokenizer: "nltk"              # "nltk" or "regex"
+  stemmer: "snowball"            # "porter" or "snowball"
+  language: "english"
+  max_transformer_tokens: 256    # truncation for dense encoder input
+
+# --------------- Inverted Index ---------------------------------------------
+index:
+  index_path: "data/processed/inverted_index.joblib"
+  field: "title_text"           # "title_text" = concatenate title + " " + text
+
+# --------------- TF-IDF -----------------------------------------------------
+tfidf:
+  tf_scheme: "log"              # "raw" | "log" (1 + log(tf))
+  idf_scheme: "standard"        # log(N / df)
+  normalize: true               # cosine normalization
+
+# --------------- BM25 -------------------------------------------------------
+bm25:
+  k1: 0.9                       # term saturation (tuned on dev set: optimal = 0.9)
+  b: 0.4                        # length normalization (tuned on dev set: optimal = 0.4)
+  # Grid search values (used during tuning phase):
+  k1_grid: [0.9, 1.2, 1.5, 2.0]
+  b_grid: [0.4, 0.6, 0.75, 0.9]
+
+# --------------- Dense Retrieval --------------------------------------------
+dense:
+  model_name: "sentence-transformers/all-MiniLM-L6-v2"
+  # Alternatives (set via CLI or override here):
+  # model_name: "multi-qa-MiniLM-L6-cos-v1"
+  # model_name: "BAAI/bge-small-en-v1.5"
+  batch_size: 64
+  embedding_dim: 384
+  normalize_embeddings: true
+  embeddings_path: "data/processed/corpus_embeddings.npy"
+  doc_ids_path: "data/processed/embedding_doc_ids.json"
+  use_faiss: true               # falls back to numpy if faiss unavailable
+
+# --------------- Hybrid RRF -------------------------------------------------
+rrf:
+  k: 60                         # RRF constant (Cormack et al. 2009)
+  candidates_per_method: 100    # top-K from each method before fusion
+  # Supported fusion combinations:
+  combinations:
+    - ["bm25", "dense"]
+    - ["tfidf", "bm25"]
+    - ["tfidf", "dense"]
+    - ["tfidf", "bm25", "dense"]  # primary (all three)
+
+# --------------- Retrieval --------------------------------------------------
+retrieval:
+  default_k: 100               # retrieve this many per query for eval
+  eval_cutoffs: [10, 50, 100]  # Recall@K cutoffs
+
+# --------------- Evaluation -------------------------------------------------
+evaluation:
+  metrics: ["P@10", "R@10", "R@50", "R@100", "MAP", "nDCG@10", "MRR@10"]
+  results_dir: "results"
+  significance_alpha: 0.05
+
+# --------------- App --------------------------------------------------------
+app:
+  default_top_k: 10
+  min_top_k: 5
+  max_top_k: 20
+  sample_queries_count: 20     # shown in dropdown
+  port: 8501
