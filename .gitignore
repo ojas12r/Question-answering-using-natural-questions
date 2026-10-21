@@ -39,7 +39,8 @@ data/processed/*.npy
 data/processed/*.joblib
 
 # Streamlit
-.streamlit/
+.streamlit/*
+!.streamlit/config.toml
 
 # Coverage
 .coverage
